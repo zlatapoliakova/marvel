@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Spinner from '../spinner/Spinner';
@@ -8,81 +8,68 @@ import mjolnir from '../../resources/img/mjolnir.png';
 
 import './randomChar.scss';
 
-class RandomChar extends Component {
+const RandomChar = () => {
 
-    state = {
-        char: {}, 
-        loading: true, 
-        erorr: false
-    }
+    const [char, setChar] = useState({});
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
 
-    marvelServices = new MarvelServices();
+    const marvelServices = new MarvelServices();
 
-    componentDidMount() {
-        this.updateChar();
-        // this.setInterv = setInterval(this.updateChar, 3000);
-    }
+    useEffect(() => {
+       updateChar();
+        const setInterv = setInterval(updateChar, 3000);
 
-    componentWillUnmount() {
-        // clearInterval(this.setInterv);
-    }
+        return clearInterval(setInterv);
+    }, [])
 
-    setCharState = (char) => {
-        this.setState({
-            char, 
-            loading: false
-        })
-    }
-
-    setCharLoading = () => {
-        this.setState({
-            loading: true
-        })
-    }
-
-    updateChar = () => {
+    const updateChar = () => {
         const id = Math.floor(Math.random() * (20 - 1) + 1);
-        this.setCharLoading();
-        this.marvelServices
+        setCharLoading();
+        marvelServices
                 .getCharacter(id)
-                .then(res => this.setCharState(res))
-                .catch(this.erorrMessage);
+                .then(res => setCharState(res))
+                .catch(errorMessage);
     }
 
-    erorrMessage = () => {
-        this.setState({
-            loading: false, 
-            error: true
-        })
+    const setCharState = (char) => {
+        setChar(char);
+        setLoading(false);
     }
-    
-    render() {
-        const {char, loading, error} = this.state;
-        const errorMessage  = error ? <ErrorMessage/> : null;
-        const loadingSprint = loading ? <Spinner/> : null;
-        const content = !(loading || error) ? <View char={char}/> : null;
 
-        return (
-            <div className="randomchar">
-                {errorMessage}
-                {loadingSprint}
-                {content}
-                <div className="randomchar__static">
-                    <p className="randomchar__title">
-                        Random character for today!<br/>
-                        Do you want to get to know him better?
-                    </p>
-                    <p className="randomchar__title">
-                        Or choose another one
-                    </p>
-                    <button className="button button__main">
-                        <div className="inner" onClick={this.updateChar}>try it</div>
-                    </button>
-                    <img src={mjolnir} alt="mjolnir" className="randomchar__decoration"/>
-                </div>
+    const setCharLoading = () => {
+        setLoading(true);
+    }
+
+    const errorMessage = () => {
+        setError(true);
+        setLoading(false);
+    }
+
+    const errorMsg  = error ? <ErrorMessage/> : null;
+    const loadingSprint = loading ? <Spinner/> : null;
+    const content = !(loading || error) ? <View char={char}/> : null;
+
+    return (
+        <div className="randomchar">
+            {errorMsg}
+            {loadingSprint}
+            {content}
+            <div className="randomchar__static">
+                <p className="randomchar__title">
+                    Random character for today!<br/>
+                    Do you want to get to know him better?
+                </p>
+                <p className="randomchar__title">
+                    Or choose another one
+                </p>
+                <button className="button button__main">
+                    <div className="inner" onClick={updateChar}>try it</div>
+                </button>
+                <img src={mjolnir} alt="mjolnir" className="randomchar__decoration"/>
             </div>
-        )
-    }
+        </div>
+    )
 }
 
 const View = ({char}) => {

@@ -3,34 +3,28 @@ import PropTypes from 'prop-types';
 
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
-import MarvelServices from '../../services/MarvelServices';
+import useMarvelServices from '../../services/MarvelServices';
 
 import './charList.scss';
 
 const CharList = (props) => {
 
     const [chars, setChars] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
     const [newItemLoading, setNewItemLoading] = useState(false);
     const [offset, setOffset] = useState(0);
     const [endedChar, setEndedChar] = useState(false);
 
-    const marvelServices = new MarvelServices();
+    const {loading, error, getAllCharacters} = useMarvelServices();
 
     useEffect(() => {
-        onRequest();
+        onRequest(offset, true);
     }, []) // work like componentDidMouth()
 
-    const onRequest = (offset) => {
-        onCharItemLoading();
-        marvelServices.getAllCharacters(offset)
-            .then(setCharState)
-            .catch(errorMessage);
-    }
+    const onRequest = (offset, initial) => {
+        initial ? setNewItemLoading(false) : setNewItemLoading(true);
 
-    const onCharItemLoading = () => {
-        setNewItemLoading(true);
+        getAllCharacters(offset)
+            .then(setCharState);
     }
 
     const setCharState = (newChars) => {
@@ -40,15 +34,9 @@ const CharList = (props) => {
         }
 
         setChars(chars => [...chars, ...newChars]);
-        setLoading(false);
         setNewItemLoading(false);
         setOffset(offset => offset + 9);
         setEndedChar(ended)
-    }
-
-    const errorMessage = () => {
-        setLoading(false);
-        setError(true);
     }
 
     const itemRef = useRef([]);
@@ -97,14 +85,13 @@ const CharList = (props) => {
     const items = renderItem(chars);
 
     const errorMsg = error ?  <ErrorMessage/> : null;
-    const loadSpinner = loading ? <Spinner/> : null;
-    const content = !(loading || error) ? items : null;
+    const loadSpinner = loading ? <Spinner/> : null; // убрали контент для того чтобы контент не перерисовывался сначала 
 
     return (
         <div className="char__list">
             {errorMsg}
             {loadSpinner}
-            {content}
+            {items} 
             <button 
                 className="button button__main button__long"
                 onClick={() => onRequest(offset)}

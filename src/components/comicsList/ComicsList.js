@@ -44,7 +44,7 @@ const ComicsList = () => {
                     <a href="#">
                         <img src={item.thumbnail} alt={item.title} className="comics__item-img"/>
                         <div className="comics__item-name">{item.title}</div>
-                        <div className="comics__item-price">{item.prices}$</div>
+                        <div className="comics__item-price">{item.prices}</div>
                     </a>
                 </li>
             );
@@ -59,7 +59,7 @@ const ComicsList = () => {
 
     const items = renderItem(comics);
     const errorMessage = error ? <ErrorMessage/> : null;
-    const loadingComics = loading ? <Spinner/> : null;
+    const loadingComics = loading && !newItemLoading ? <Spinner/> : null;
 
     return (
         <div className="comics__list">

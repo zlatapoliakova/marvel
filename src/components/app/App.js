@@ -20,7 +20,7 @@ const App = () => {
                 <main>
                     <Suspense fallback={<Spinner/>}>
                         <Switch>
-                            <Route exact path='/characters'>
+                            <Route exact path='/'>
                                 <MainPage/>
                             </Route>
                             <Route path='/characters/:id'>

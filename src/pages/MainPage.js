@@ -6,7 +6,7 @@ import CharInfo from "../components/charInfo/CharInfo";
 import ErrorBoundary from "../components/errorBoundary/ErrorBoundary";
 
 import decoration from '../resources/img/vision.png';
-import SearchFrom from "../components/searchForm/SearchFrom";
+import SearchFrom from "../components/searchForm/SearchForm";
 
 const MainPage = () => {
 

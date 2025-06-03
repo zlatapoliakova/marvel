@@ -11,22 +11,27 @@ const useMarvelServices = () => {
     const getAllCharacters = async (offset = _offsetBase, limit = _limitBase) => {
         const res = await request(`${_apiBase}characters?${limit ? `limit=9` : ''}&offset=${offset}&${_apiKey}`);
         return res.data.results.map(_transformCharacter);
-    }
+    };
+
+    const getCharactersByName = async (name) => {
+        const res = await request(`${_apiBase}characters?name=${name}&${_apiKey}`);
+        return res.data.results.map(_transformCharacter);
+    };
 
     const getCharacter = async (id) => {
         const res = await request(`${_apiBase}characters/${id}?${_apiKey}`);
         return _transformCharacter(res.data.results[0]);
-    }
+    };
 
     const getAllComics = async (offset = _offsetBase) => {
         const res = await request(`${_apiBase}comics?limit=8&offset=${offset}&${_apiKey}`);
         return res.data.results.map(_transformComics);
-    }
+    };
 
     const getComic = async (id) => {
         const res = await request(`${_apiBase}comics/${id}?${_apiKey}`);
         return _transformComics(res.data.results[0]);
-    }
+    };
 
     const _transformCharacter = (char) => {
         return {
@@ -37,8 +42,8 @@ const useMarvelServices = () => {
             homepage: char.urls[0].url,
             wiki: char.urls[1].url,
             comics: char.comics.items
-        }  
-    }
+        };  
+    };
 
     const _transformComics = (comics) => {
         return {
@@ -49,10 +54,19 @@ const useMarvelServices = () => {
             prices: comics.prices[0].price ?  `${comics.prices[0].price}$` : 'Not avialable',
             languages: comics.textObjects[0]?.language || 'en-us',
             thumbnail: comics.thumbnail.path + '.' + comics.thumbnail.extension
-        }
-    }
+        };
+    };
 
-    return {loading, error, clearError, getAllCharacters, getCharacter, getAllComics, getComic}
-}
+    return {
+        loading, 
+        error, 
+        clearError, 
+        getAllCharacters, 
+        getCharacter, 
+        getAllComics, 
+        getComic, 
+        getCharactersByName
+    };
+};
 
 export default useMarvelServices;

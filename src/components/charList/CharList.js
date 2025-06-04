@@ -2,9 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import {CSSTransition, TransitionGroup} from 'react-transition-group';
 
-import Spinner from '../spinner/Spinner';
-import ErrorMessage from '../errorMessage/ErrorMessage';
 import useMarvelServices from '../../services/MarvelServices';
+import { setContentList } from '../../utils/SetContent';
 
 import './charList.scss';
 
@@ -15,7 +14,7 @@ const CharList = (props) => {
     const [offset, setOffset] = useState(0);
     const [endedChar, setEndedChar] = useState(false);
 
-    const {loading, error, getAllCharacters} = useMarvelServices();
+    const {getAllCharacters, process, setProcess} = useMarvelServices();
 
     useEffect(() => {
         onRequest(offset, true);
@@ -25,7 +24,8 @@ const CharList = (props) => {
         initial ? setNewItemLoading(false) : setNewItemLoading(true);
 
         getAllCharacters(offset)
-            .then(setCharState);
+            .then(setCharState)
+            .then(() => setProcess('confirmed'));
     }
 
     const setCharState = (newChars) => {
@@ -87,16 +87,9 @@ const CharList = (props) => {
         )
     }
 
-    const items = renderItem(chars);
-
-    const errorMsg = error ?  <ErrorMessage/> : null;
-    const loadSpinner = loading ? <Spinner/> : null; // убрали контент для того чтобы контент не перерисовывался сначала 
-
     return (
         <div className="char__list">
-            {errorMsg}
-            {loadSpinner}
-            {items} 
+            {setContentList(process, () => renderItem(chars), newItemLoading)}
             <button 
                 className="button button__main button__long"
                 onClick={() => onRequest(offset)}

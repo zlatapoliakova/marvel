@@ -2,13 +2,12 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import useMarvelServices from '../../services/MarvelServices';
-import ErrorMessage from '../../components/errorMessage/ErrorMessage';
-import Spinner from '../../components/spinner/Spinner';
+import { setContent } from '../../utils/SetContent';
 
 const SingleInfoPage = ({Component, getData}) => {
 
     const {id} = useParams();
-    const {loading, error, getCharacter, getComic, clearError} = useMarvelServices();
+    const {getCharacter, getComic, clearError, process, setProcess} = useMarvelServices();
 
     const [data, setData] = useState(null);
     
@@ -21,10 +20,13 @@ const SingleInfoPage = ({Component, getData}) => {
 
         switch(getData) {
             case "comic":
-                getComic(id).then(onDataLoaded)
+                getComic(id).then(onDataLoaded).then(() => setProcess('confirmed'));
                 break;
             case "character":
-                getCharacter(id).then(onDataLoaded);
+                getCharacter(id).then(onDataLoaded).then(() => setProcess('confirmed'));
+                break;
+            default:
+                throw new Error('Page did not find');
         }
     }
 
@@ -32,15 +34,9 @@ const SingleInfoPage = ({Component, getData}) => {
         setData(data);
     }
 
-    const errorMsg = error ?  <ErrorMessage/> : null;
-    const spinner = loading ? <Spinner/> : null;
-    const content  = !(error || loading || !data) ? <Component data={data} /> : null;
-
     return (
         <>
-            {errorMsg}
-            {spinner}
-            {content}
+            {setContent(process, Component, data)}
         </>
     );
 }

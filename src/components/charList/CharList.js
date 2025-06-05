@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import {CSSTransition, TransitionGroup} from 'react-transition-group';
 
@@ -18,7 +18,8 @@ const CharList = (props) => {
 
     useEffect(() => {
         onRequest(offset, true);
-    }, []) // work like componentDidMouth()
+        // eslint-disable-next-line
+    }, []);
 
     const onRequest = (offset, initial) => {
         initial ? setNewItemLoading(false) : setNewItemLoading(true);
@@ -29,7 +30,7 @@ const CharList = (props) => {
     }
 
     const setCharState = (newChars) => {
-        let ended = false
+        let ended = false;
         if (newChars.length < 9) {
             ended = true;
         }
@@ -37,7 +38,7 @@ const CharList = (props) => {
         setChars(chars => [...chars, ...newChars]);
         setNewItemLoading(false);
         setOffset(offset => offset + 9);
-        setEndedChar(ended)
+        setEndedChar(ended);
     }
 
     const itemRef = useRef([]);
@@ -84,12 +85,17 @@ const CharList = (props) => {
                   {items}   
                 </TransitionGroup>
             </ul>
-        )
+        );
     }
+
+    const elements = useMemo(() => {
+        return setContentList(process, () => renderItem(chars), newItemLoading);
+        // eslint-disable-next-line
+    }, [process]);
 
     return (
         <div className="char__list">
-            {setContentList(process, () => renderItem(chars), newItemLoading)}
+            {elements}
             <button 
                 className="button button__main button__long"
                 onClick={() => onRequest(offset)}
@@ -98,12 +104,12 @@ const CharList = (props) => {
                 <div className="inner">load more</div>
             </button>
         </div>
-    )
+    );
 }
 
 CharList.propTypes = {
     charId: PropTypes.number,
-    onSelectedCharacter: PropTypes.func.isRequired // может показать предупреждение если проп не передан
+    onSelectedCharacter: PropTypes.func.isRequired
 }
 
 export default CharList;

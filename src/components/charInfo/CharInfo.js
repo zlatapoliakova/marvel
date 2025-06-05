@@ -12,7 +12,8 @@ const CharInfo = ({charId}) => {
 
     useEffect(() => {
         updateChar();
-    }, [charId])
+        // eslint-disable-next-line
+    }, [charId]);
 
     const updateChar = () => {
         if(!charId) {
@@ -33,14 +34,14 @@ const CharInfo = ({charId}) => {
         <div className="char__info">
             {setContent(process, View, char)}
         </div>
-    )
+    );
 }
 
 const View = ({data}) => {
     const {name, description, thumbnail, homepage, wiki, comics} = data;
     let styleImg = {objectFit: 'cover'};
     if (thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
-        styleImg = {objectFit: 'unset'}
+        styleImg = {objectFit: 'unset'};
     }
 
     return (
@@ -79,7 +80,7 @@ const View = ({data}) => {
                 }
             </ul>
         </>
-    )
+    );
 }
 
 export default CharInfo;

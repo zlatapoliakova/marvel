@@ -13,6 +13,7 @@ const SingleInfoPage = ({Component, getData}) => {
     
     useEffect(() => {
         updateData();
+        // eslint-disable-next-line
     }, [id])
 
     const updateData = () => {

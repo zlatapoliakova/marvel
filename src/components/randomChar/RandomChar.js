@@ -19,7 +19,8 @@ const RandomChar = () => {
         const setInterv = setInterval(updateChar, 6000);
 
         return () => {clearInterval(setInterv)};
-    }, [])
+        // eslint-disable-next-line
+    }, []);
 
     const updateChar = () => {
         const id = Math.floor(Math.random() * (20 - 1) + 1);
@@ -49,7 +50,7 @@ const RandomChar = () => {
                 <img src={mjolnir} alt="mjolnir" className="randomchar__decoration"/>
             </div>
         </div>
-    )
+    );
 }
 
 const View = ({data}) => {

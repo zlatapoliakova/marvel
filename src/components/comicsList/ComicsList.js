@@ -17,7 +17,8 @@ const ComicsList = () => {
 
     useEffect(() => {
         onRequest(offset, true);
-    }, [])
+        // eslint-disable-next-line
+    }, []);
 
     const onRequest = (offset, initial) => {
         initial ? setNewItemsLoading(false) : setNewItemsLoading(true);
@@ -70,7 +71,7 @@ const ComicsList = () => {
                 <div className="inner">load more</div>
             </button>
         </div>
-    )
+    );
 }
 
 export default ComicsList;
